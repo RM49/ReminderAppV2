@@ -17,6 +17,7 @@ class SQLDB(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, D
         private const val TITLE = "Title"
         private const val DESC = "Desc"
         private const val INCREMENT = "Increment"
+        private const val DAYS = "Days"
 
     }
     private val context = context
@@ -26,7 +27,8 @@ class SQLDB(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, D
                 " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TITLE + " TEXT, " +
                 DESC + " TEXT, " +
-                INCREMENT + " INTEGER);"
+                INCREMENT + " INTEGER, " +
+                DAYS + " INTEGER);"
                 )
         db?.execSQL(createTblReminders)
     }
@@ -45,6 +47,7 @@ class SQLDB(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, D
         cv.put(TITLE, title)
         cv.put(DESC, desc)
         cv.put(INCREMENT, 1)
+        cv.put(DAYS, 1)
         val result = db.insert(TBL_REMINDERS, null, cv)
         if (result == -1L) {
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
@@ -72,6 +75,25 @@ class SQLDB(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, D
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
         }else {
             Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+        }
+
+
+    }
+
+    fun IncrementAll(IDs: ArrayList<String>, Titles: ArrayList<String>, Descriptions: ArrayList<String>, Increments: ArrayList<String>, Days: ArrayList<String>) {
+
+        val db = this.writableDatabase
+
+
+        db.delete(TBL_REMINDERS, null, null)
+
+        for (i in IDs.indices) {
+            val cv = ContentValues()
+            cv.put(TITLE, Titles[i])
+            cv.put(DESC, Descriptions[i])
+            cv.put(INCREMENT, Increments[i].toInt())
+            cv.put(DAYS, Days[i].toInt())
+            val result = db.insert(TBL_REMINDERS, null, cv)
         }
 
 
